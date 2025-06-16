@@ -1,17 +1,16 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateEventSummaryView extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
+        // Supprimer la vue si elle existe déjà (optionnel mais propre)
+        DB::statement('DROP VIEW IF EXISTS event_summary_view');
+
         DB::statement("
             CREATE VIEW event_summary_view AS
             SELECT
@@ -26,11 +25,8 @@ return new class extends Migration
         ");
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        DB::statement("DROP VIEW IF EXISTS event_summary_view");
+        DB::statement('DROP VIEW IF EXISTS event_summary_view');
     }
-};
+}

@@ -10,6 +10,33 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Inscription d'un nouvel utilisateur",
+     *     tags={"Authentification"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","email","password","password_confirmation"},
+     *             @OA\Property(property="name", type="string", example="Jean Dupont"),
+     *             @OA\Property(property="email", type="string", format="email", example="jean@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="secret123"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="secret123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Utilisateur inscrit avec succès",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object"),
+     *             @OA\Property(property="token", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=422, description="Erreur de validation"),
+     *     @OA\Response(response=500, description="Erreur serveur")
+     * )
+     */
     public function register(Request $request)
     {
         try {
@@ -41,6 +68,31 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Connexion d'un utilisateur",
+     *     tags={"Authentification"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", format="email", example="jean@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="secret123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Connexion réussie",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="string", example="Jean Dupont connecté"),
+     *             @OA\Property(property="token", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=422, description="Identifiants invalides"),
+     *     @OA\Response(response=500, description="Erreur serveur")
+     * )
+     */
     public function login(Request $request)
     {
         try {
@@ -74,6 +126,21 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/logout",
+     *     summary="Déconnexion de l'utilisateur",
+     *     tags={"Authentification"},
+     *     security={{"sanctum": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Déconnecté avec succès",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Déconnecté avec succès")
+     *         )
+     *     )
+     * )
+     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
